@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29111.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Live_Electrochem", "Live_Electrochem\Live_Electrochem.csproj", "{03DC8012-AB97-4643-946D-F479904B1581}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{65E35B6C-75D8-4DBA-B34D-86AFB0D0CA68}"
+	ProjectSection(ProjectDependencies) = postProject
+		{04630E42-863A-4EBE-B49D-74CAC4410DED} = {04630E42-863A-4EBE-B49D-74CAC4410DED}
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9} = {C21F7CBA-3456-4E61-B6CE-19B8648E99F9}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallActions", "InstallActions\InstallActions.csproj", "{04630E42-863A-4EBE-B49D-74CAC4410DED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Post_Setup_Scripting", "Setup project post build\Post_Setup_Scripting.csproj", "{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03DC8012-AB97-4643-946D-F479904B1581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03DC8012-AB97-4643-946D-F479904B1581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03DC8012-AB97-4643-946D-F479904B1581}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03DC8012-AB97-4643-946D-F479904B1581}.Debug|x86.Build.0 = Debug|Any CPU
+		{03DC8012-AB97-4643-946D-F479904B1581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03DC8012-AB97-4643-946D-F479904B1581}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03DC8012-AB97-4643-946D-F479904B1581}.Release|x86.ActiveCfg = Release|Any CPU
+		{03DC8012-AB97-4643-946D-F479904B1581}.Release|x86.Build.0 = Release|Any CPU
+		{65E35B6C-75D8-4DBA-B34D-86AFB0D0CA68}.Debug|Any CPU.ActiveCfg = Debug
+		{65E35B6C-75D8-4DBA-B34D-86AFB0D0CA68}.Debug|x86.ActiveCfg = Debug
+		{65E35B6C-75D8-4DBA-B34D-86AFB0D0CA68}.Release|Any CPU.ActiveCfg = Release
+		{65E35B6C-75D8-4DBA-B34D-86AFB0D0CA68}.Release|x86.ActiveCfg = Release
+		{04630E42-863A-4EBE-B49D-74CAC4410DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04630E42-863A-4EBE-B49D-74CAC4410DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04630E42-863A-4EBE-B49D-74CAC4410DED}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{04630E42-863A-4EBE-B49D-74CAC4410DED}.Debug|x86.Build.0 = Debug|Any CPU
+		{04630E42-863A-4EBE-B49D-74CAC4410DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04630E42-863A-4EBE-B49D-74CAC4410DED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04630E42-863A-4EBE-B49D-74CAC4410DED}.Release|x86.ActiveCfg = Release|Any CPU
+		{04630E42-863A-4EBE-B49D-74CAC4410DED}.Release|x86.Build.0 = Release|Any CPU
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}.Debug|x86.Build.0 = Debug|Any CPU
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}.Release|x86.ActiveCfg = Release|Any CPU
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B8D7800-B3CE-4B45-9692-186DE6D44D84}
+	EndGlobalSection
+EndGlobal
