@@ -92,7 +92,7 @@ namespace Live_Electrochem
 
             LoadSettings();
 
-            
+
         }
 
         private System.IO.FileSystemWatcher watcher;
@@ -749,7 +749,7 @@ namespace Live_Electrochem
 
             if (Files.Count == 0 && folder.GetFiles().Count() > 0)
             {
-                MessageBox.Show("No files were Analyzed yet there are files in the older. Consider changing Extension Filter");
+                MessageBox.Show("No files were Analyzed yet there are files in the Folder. Consider changing Extension Filter");
             }
 
             UpdateOutputPlot(this.WindowLowerBound, this.WindowUpperBound);
@@ -1752,9 +1752,15 @@ namespace Live_Electrochem
 
             //s.CurrentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            var result = GetRegistryValue("InstallerVersion");
+            var result = GetRegistryValue("InstallerVersion");      //this will cause problems when running from Visual Studio (i.e. not properly installed)
+
             if (result == null)
-                s.CurrentVersion = new Version(0, 0, 0, 0).ToString();
+            {
+                if (Debugger.IsAttached)
+                    s.CurrentVersion = new Version(0, 0, 0, 1).ToString();
+                else
+                    s.CurrentVersion = new Version(0, 0, 0, 0).ToString();
+            }
             else if (!result.ToString().IsNullOrWhiteSpace())
                 s.CurrentVersion = result.ToString();
             else
@@ -1797,7 +1803,10 @@ namespace Live_Electrochem
                     //check if the Settings file was created with a different version of the Application (using InstallerVersion as a proxy for Application Version since I can control InstallerVersion easier)
                     var result = GetRegistryValue("InstallerVersion");
                     string CurrentVersion = result == null ? string.Empty : result.ToString();
-                    
+                    if (Debugger.IsAttached)
+                    {
+                        CurrentVersion = new Version(0, 0, 0, 1).ToString();
+                    }
                     if (s.CurrentVersion != CurrentVersion)
                     {
                         MessageBox.Show(string.Format("Settings File was created with version {0}, which is not the current version {1}\n\nYou should delete the Settings and Layout .xml files from My Documents", s.CurrentVersion, CurrentVersion), "Incorrect Version", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -1932,39 +1941,50 @@ namespace Live_Electrochem
         {
             if (int.TryParse(ExportSweepSelection.Text, out int sweep) == false)
             {
-                MessageBox.Show("Invalid ExportSweepSelection value (must be a number)");
+                MessageBox.Show("Invalid ExportSweepSelection value (must be a number). Unable to continue");
                 return;
             }
 
             if (SelectedFile == null)
             {
-                MessageBox.Show("No file opened");
+                MessageBox.Show("SelectedFile is null. Unable to continue");
                 return;
             }
 
-            if (sweep < 0)
-            {
-                MessageBox.Show("Invalid Sweep #)");
-                return;
-            }
-            if (sweep > SelectedFile.TotalScanCount)
-            {
-                MessageBox.Show("Invalid Sweep #");
-                return;
-            }
+            //if (sweep < 0)            //the try..catch handle this now
+            //{
+            //    MessageBox.Show("Invalid Sweep #)");
+            //    return;
+            //}
+            //if (sweep > SelectedFile.TotalScanCount)
+            //{
+            //    MessageBox.Show("Invalid Sweep #");
+            //    return;
+            //}
 
-            SelectedFile.AIChannels.First().GetScaledData(sweep, SelectedFile.IsFilterEnabled, SelectedFile.FilterCutOffFrequency, BackgroundSubtractionSweepCount).CopyToClipboard();
+            try
+            {
+                SelectedFile.AIChannels.First().GetScaledData(sweep != -1 ? sweep : SelectedSweep, SelectedFile.IsFilterEnabled, SelectedFile.FilterCutOffFrequency, BackgroundSubtractionSweepCount).CopyToClipboard();
+            }
+            catch (IndexOutOfRangeException iore)
+            {
+                AddLog("Unable to copy Voltamogram to Clipboard. IndexOutOfRangeException. Check ExportSweepSelection");
+            }
+            catch (Exception ex)
+            {
+                AddLog("Unable to copy Voltamogram to Clipboard");
+            }
         }
         private void CopyTriangleWaveform_Click(object sender, RoutedEventArgs e)
         {
-            if (int.TryParse(ExportSweepSelection.Text, out int sweep) == false)
-            {
-                MessageBox.Show("Invalid ExportSweepSelection value (must be a number)");
-                return;
-            }
+            //if (int.TryParse(ExportSweepSelection.Text, out int sweep) == false)
+            //{
+            //    MessageBox.Show("Invalid ExportSweepSelection value (must be a number). Unable to continue");
+            //    return;
+            //}
             if (SelectedFile == null)
             {
-                MessageBox.Show("No file opened");
+                MessageBox.Show("SelectedFile is null. Unable to continue");
                 return;
             }
 
@@ -1974,28 +1994,45 @@ namespace Live_Electrochem
         {
             if (int.TryParse(ExportSweepSelection.Text, out int sweep) == false)
             {
-                MessageBox.Show("Invalid ExportSweepSelection value (must be a number)");
+                MessageBox.Show("Invalid ExportSweepSelection value (must be a number). Unable to continue");
                 return;
             }
 
             if (SelectedFile == null)
-                return;
-            if (SelectedAOChannel == null)
             {
-                MessageBox.Show("First select an AOChannel");
+                MessageBox.Show("SelectedFile is null. Unable to continue");
                 return;
             }
+            //if (SelectedAOChannel == null)            //just do all channels
+            //{
+            //    MessageBox.Show("Selected AOChannel is null. First select an AOChannel.  Unable able to continue");
+            //    return;
+            //}
             try
             {
-                SelectedAOChannel.TriangleWaveform.CopyToClipboard(
-                    SelectedFile.AIChannels.First().GetScaledData(sweep, SelectedFile.IsFilterEnabled, SelectedFile.FilterCutOffFrequency, BackgroundSubtractionSweepCount),
-                    new List<string>() { "Voltage (V)", "Current (nA?)" });
-                AddLog(string.Format("Voltamogram copied to Clipboard (sweep #{0} of {1})", sweep, SelectedFile.Filename));
+                List<decimal[]> channeldata = new List<decimal[]>();
+                List<string> headings = new List<string>() { "Voltage (V)" };
+
+                foreach (AIChannel channel in SelectedFile.AIChannels)
+                {
+                    channeldata.Add(channel.GetScaledData(sweep != -1 ? sweep : SelectedSweep, SelectedFile.IsFilterEnabled, SelectedFile.FilterCutOffFrequency, BackgroundSubtractionSweepCount));
+                    headings.Add($"Channel {channel.ChannelNumber} Current (nA?)");
+                }
+                SelectedFile.AOChannels.First().TriangleWaveform.CopyToClipboard(channeldata.First(), headings);            //WARNING WARNING WARNING This still only uses the first AIChannel. Need to update CopyToClipboard to accept IEnumerable of IEnumerable<decimal>
+                //SelectedFile.AOChannels.First().TriangleWaveform.CopyToClipboard(
+                //    SelectedFile.AIChannels.First().GetScaledData(sweep != -1 ? sweep : SelectedSweep, SelectedFile.IsFilterEnabled, SelectedFile.FilterCutOffFrequency, BackgroundSubtractionSweepCount),
+                //new List<string>() { "Voltage (V)", "Current (nA?)" });
+                AddLog(string.Format("Voltamogram copied to Clipboard (sweep #{0} of file {1}, Channels {2})", sweep, SelectedFile.Filename, string.Join(",", SelectedFile.AIChannels.Select(a => a.ChannelNumber))));
             }
-            catch
+            catch (IndexOutOfRangeException iore)
+            {
+                AddLog("Unable to copy Voltamogram to Clipboard. IndexOutOfRangeException. Check ExportSweepSelection");
+            }
+            catch (Exception ex)
             {
                 AddLog("Unable to copy Voltamogram to Clipboard");
             }
+
         }
 
         #region Debug
