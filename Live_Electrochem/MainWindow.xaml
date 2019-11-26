@@ -420,7 +420,10 @@
                                 <Button ToolTip="Copy Background Current Response to Clipboard"
                                                 Click="CopyBackgroundResponse_Click" HorizontalAlignment="Left" Margin="10,0">Background Waveform
                                 </Button>
-                                <TextBox x:Name="ExportSweepSelection" ></TextBox>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Export Sweep Selection " ToolTip="The Sweep Index to export. Use -1 for the current SelectedSweep"></TextBlock>
+                                    <TextBox x:Name="ExportSweepSelection" ToolTip="The Sweep Index to export. Use -1 for the current SelectedSweep" Width="100"></TextBox>
+                                </StackPanel>
                                 <Button Click="FindPeak_Click">Find Peak</Button>
                                 <TextBlock x:Name="PeakValue" Style="{StaticResource MaterialDesignHeadline6TextBlock}"></TextBlock>
                                 <TextBlock x:Name="PeakValueTime" Margin="10,0" Style="{StaticResource MaterialDesignHeadline6TextBlock}"></TextBlock>
