@@ -2005,7 +2005,7 @@ namespace Live_Electrochem
             if (SelectedFile == null)
                 return;
 
-            SelectedAIChannel.RawData[SelectedSweep].CopyToClipboard(null, ("Raw").ItemAsEnumerable());
+            SelectedAIChannel.RawData[SelectedSweep].CopyToClipboard(AdditionalArray: null, ("Raw").ItemAsEnumerable());
 
             MessageBox.Show(string.Format("Raw Data (I16) exported to clipboard\n\nSweep #{0} (zero indexed?)", SelectedSweep));
         }
@@ -2015,7 +2015,7 @@ namespace Live_Electrochem
             if (SelectedFile == null)
                 return;
 
-            SelectedAIChannel.GetScaledData(SelectedSweep, SelectedFile.IsFilterEnabled, SelectedFile.FilterCutOffFrequency, 0).CopyToClipboard(null, ("Data").ItemAsEnumerable());
+            SelectedAIChannel.GetScaledData(SelectedSweep, SelectedFile.IsFilterEnabled, SelectedFile.FilterCutOffFrequency, 0).CopyToClipboard(AdditionalArray: null, ("Data").ItemAsEnumerable());
 
             MessageBox.Show(string.Format("Data (decimal) exported to clipboard\n\nSweep #{0} (zero indexed?)\n\nNot background subtracted\n\nGain = {1}    Offset = {2}   nA/V = {3}",
                 SelectedSweep, SelectedAIChannel.ADGain, Offset, SelectedAIChannel.nA_V));
@@ -2027,7 +2027,7 @@ namespace Live_Electrochem
             if (SelectedFile == null)
                 return;
 
-            SelectedAIChannel.RawSubtractData.CopyToClipboard(null, ("Raw Background").ItemAsEnumerable());
+            SelectedAIChannel.RawSubtractData.CopyToClipboard(AdditionalArray: null, ("Raw Background").ItemAsEnumerable());
 
             MessageBox.Show(string.Format("Raw Background Data (I16) exported to clipboard\n\n{0} sweeps (from 0)", BackgroundSubtractionSweepCount));
 
@@ -2038,7 +2038,7 @@ namespace Live_Electrochem
             if (SelectedFile == null)
                 return;
 
-            SelectedAIChannel.SubtractData.CopyToClipboard(null, ("Background").ItemAsEnumerable());
+            SelectedAIChannel.SubtractData.CopyToClipboard(AdditionalArray: null, ("Background").ItemAsEnumerable());
 
             MessageBox.Show(string.Format("Background Data (decimal) exported to clipboard\n\n{0} sweeps (from 0)", BackgroundSubtractionSweepCount));
 
@@ -2049,7 +2049,7 @@ namespace Live_Electrochem
             if (SelectedFile == null)
                 return;
 
-            SelectedFile.AOChannels.Select(a => a.TriangleWaveform).CopyToClipboard(null, ("Volate Triangle").ItemAsEnumerable());
+            SelectedFile.AOChannels.Select(a => a.TriangleWaveform).CopyToClipboard(AdditionalArray: null, ("Volate Triangle").ItemAsEnumerable());
 
             MessageBox.Show(string.Format("Voltage Triangle Command (decimal) exported to clipboard\n\n{0} data points", SelectedFile.AOChannels.Count()));
         }
