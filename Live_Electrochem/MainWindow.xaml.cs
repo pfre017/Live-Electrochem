@@ -84,7 +84,7 @@ namespace Live_Electrochem
 
             //SetValue(ScopeModelProperty, new ScopeViewModel() { AutoScaleX = true, AutoScaleY = true });
 
-            string title = "Live Electrochemistry - Pete Freestone 2016 (single+multi-channel version; 25th August 2019)";
+            string title = "Live Electrochemistry - Pete Freestone 2016 (single+multi-channel version; 12th December 2019)";
             this.Title = title;
             AddLog(title);
 
