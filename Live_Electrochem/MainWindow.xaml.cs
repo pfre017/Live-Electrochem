@@ -1803,10 +1803,10 @@ namespace Live_Electrochem
                     //check if the Settings file was created with a different version of the Application (using InstallerVersion as a proxy for Application Version since I can control InstallerVersion easier)
                     var result = GetRegistryValue("InstallerVersion");
                     string CurrentVersion = result == null ? string.Empty : result.ToString();
-                    if (Debugger.IsAttached)
-                    {
-                        CurrentVersion = new Version(0, 0, 0, 1).ToString();
-                    }
+                    //if (Debugger.IsAttached)
+                    //{
+                    //    CurrentVersion = new Version(0, 0, 0, 1).ToString();
+                    //}
                     if (s.CurrentVersion != CurrentVersion)
                     {
                         MessageBox.Show(string.Format("Settings File was created with version {0}, which is not the current version {1}\n\nYou should delete the Settings and Layout .xml files from My Documents", s.CurrentVersion, CurrentVersion), "Incorrect Version", MessageBoxButton.OK, MessageBoxImage.Warning);

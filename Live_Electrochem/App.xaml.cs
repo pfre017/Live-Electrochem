@@ -21,7 +21,7 @@ namespace Live_Electrochem
             base.OnStartup(starte);
             
             // Piracy checks
-            DateTime expirydatetime = new DateTime(2020, 6, 30);
+            DateTime expirydatetime = new DateTime(2021, 6, 30);
 
             if (DateTime.Now > expirydatetime)
             {
