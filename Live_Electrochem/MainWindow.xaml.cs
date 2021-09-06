@@ -9,7 +9,6 @@ using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
-using OxyPlot;
 using System.Threading.Tasks;
 using Helper.Common;
 using Helper.Extensions;
@@ -24,6 +23,7 @@ using System.Net.Mail;
 using System.Net;
 using Plotting;
 using OxyPlot.Series;
+using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
 using System.Windows.Media;
@@ -1520,8 +1520,8 @@ namespace Live_Electrochem
             AnalysisOutputLB.Items.Clear();
             AnalysisOutputLB.Items.Add("CalculateSD");
 
-            double baseline_SD = 0;
-            double evoked_Max = 0;
+            //double baseline_SD = 0;
+            //double evoked_Max = 0;
 
             LVBinFile file = this.Files.First();
 
@@ -1968,11 +1968,11 @@ namespace Live_Electrochem
             }
             catch (IndexOutOfRangeException iore)
             {
-                AddLog("Unable to copy Voltamogram to Clipboard. IndexOutOfRangeException. Check ExportSweepSelection");
+                AddLog($"Unable to copy Voltammogram to Clipboard. IndexOutOfRangeException '{iore.Message}'. Check ExportSweepSelection");
             }
             catch (Exception ex)
             {
-                AddLog("Unable to copy Voltamogram to Clipboard");
+                AddLog($"Unable to copy Voltammogram to Clipboard. Exception '{ex.Message}'");
             }
         }
         private void CopyTriangleWaveform_Click(object sender, RoutedEventArgs e)
@@ -2024,13 +2024,14 @@ namespace Live_Electrochem
                 //new List<string>() { "Voltage (V)", "Current (nA?)" });
                 AddLog(string.Format("Voltamogram copied to Clipboard (sweep #{0} of file {1}, Channels {2})", sweep, SelectedFile.Filename, string.Join(",", SelectedFile.AIChannels.Select(a => a.ChannelNumber))));
             }
+
             catch (IndexOutOfRangeException iore)
             {
-                AddLog("Unable to copy Voltamogram to Clipboard. IndexOutOfRangeException. Check ExportSweepSelection");
+                AddLog($"Unable to copy Voltammogram to Clipboard. IndexOutOfRangeException '{iore.Message}'. Check ExportSweepSelection");
             }
             catch (Exception ex)
             {
-                AddLog("Unable to copy Voltamogram to Clipboard");
+                AddLog($"Unable to copy Voltammogram to Clipboard. Exception '{ex.Message}'");
             }
 
         }
@@ -2222,7 +2223,7 @@ namespace Live_Electrochem
             OutputAggregateFunction = AggregateFunctionEnum.Average;
         }
         #endregion
-        private DoubleRectangle GetFullDataRange(OxyPlot.Wpf.Plot Plot)
+        private DoubleRectangle GetFullDataRange(OxyPlot.Wpf.PlotView Plot)
         {
             DoubleRectangle result = new DoubleRectangle();
 
@@ -2234,9 +2235,9 @@ namespace Live_Electrochem
             double xmax = double.MinValue;
 
 
-            foreach (OxyPlot.Wpf.LineSeries series in Plot.Series)
+            foreach (OxyPlot.Series.LineSeries series in Plot.Model.Series)
             {
-                foreach (DataPoint item in series.Items)
+                foreach (DataPoint item in series.Points)
                 {
                     Debug.Print("object = {0}", item);
                     ymin = Math.Min(ymin, item.Y);
@@ -2272,7 +2273,7 @@ namespace Live_Electrochem
             MailMessage message = new MailMessage();
             message.To.Add(new MailAddress("peter.s.freestone@gmail.com"));
             message.From = new MailAddress("siliconnervoussystem@gmail.com");
-            message.Body = string.Join("\n", this.Logs);
+            message.Body = string.Join("\n", Logs);
             message.Subject = string.Format("Live Electrochem Debug: {0}", DateTime.Now.ToString());
 
             //foreach (string filename in this.Attachments)
@@ -2347,9 +2348,10 @@ namespace Live_Electrochem
                 return;
             }
             CalibrationSteps.Clear();
-            CalibrationSteps.AddRangeUnique(ExtractCalibrationSteps(calibrationfile));
+            _ = CalibrationSteps.AddRangeUnique(ExtractCalibrationSteps(calibrationfile));
 
-            return;
+            //            return;           //PF 6/9/2021 Removed this line - not sure why I didn't want the code below to execute?
+
 
             AddLog("Peak search Window {0} ({1} V) to {2} ({3} V)", LowerBound, LowerVoltageBound, UpperBound, UpperVoltageBound);
 
@@ -2405,6 +2407,8 @@ namespace Live_Electrochem
 
             CalibrationPlot.InvalidateVisual();
             CalibrationPlot.UpdateLayout();
+
+
         }
 
         private IEnumerable<Event> ExtractCalibrationSteps(LVBinFile CalibrationFile)

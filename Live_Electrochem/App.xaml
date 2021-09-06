@@ -44,9 +44,10 @@
                         <Color>#ccb974</Color>
                         <Color>#64b5cd</Color>
                     </x:Array>
-                    <Style TargetType="oxy:Plot">
-                        <Setter Property="DefaultColors" Value="{StaticResource SeabornColors}"/>
-                    </Style>
+                    
+                    <!--<Style TargetType="oxy:PlotView">
+                        <Setter Property="De" Value="{StaticResource SeabornColors}"/>
+                    </Style>-->
 
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>

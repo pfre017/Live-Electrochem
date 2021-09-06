@@ -76,7 +76,7 @@ namespace Live_Electrochem
 
                 for (int i = 0; i < RawData[Index].Length; i++)
                 {
-                    Data[Index][i] = (RawData[Index][i] * GainMultiplier);      //GainMultiplier
+                    Data[Index][i] = RawData[Index][i] * GainMultiplier;      //GainMultiplier
                 }
 
                 if (IsFilterEnabled)
@@ -89,7 +89,7 @@ namespace Live_Electrochem
                 {
                     //generate the Subtract Data first
                     SubtractData = new decimal[RawData[Index].Length];
-                    RawSubtractData = Helper.Analysis.DataAnalysisHelper.CrossAverageArrays(RawData.Take(BackgroundSubstractionSweepCount));
+                    RawSubtractData = Array.ConvertAll(DataAnalysisHelper.CrossFunctionArrays(RawData.Take(BackgroundSubstractionSweepCount).Select(a => Array.ConvertAll<short, float>(a, f => f)), CrossFunctionModeEnum.Average), s => (short)s);      //PF 6/10/2021     surely all this casting is unneccesary
                     //Parallel.For(0, RawData[Index].Length,
                     //i =>
                     //{
@@ -98,7 +98,7 @@ namespace Live_Electrochem
 
                     for (int i = 0; i < RawData[Index].Length; i++)
                     {
-                        SubtractData[i] = (RawSubtractData[i] * GainMultiplier);        //GainMultiplier
+                        SubtractData[i] = RawSubtractData[i] * GainMultiplier;        //GainMultiplier
                     }
                     if (IsFilterEnabled)
                         SubtractData = DataAnalysisHelper.Butterworth(SubtractData, SamplingPeriod, FilterCutOffFrequency);
