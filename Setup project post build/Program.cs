@@ -25,7 +25,6 @@ namespace Post_Setup_Scripting
             Console.WriteLine(System.Reflection.Assembly.GetExecutingAssembly().FullName);
             Console.WriteLine("{0} args passed in", args.Length);
 
-            Console.WriteLine("___________________________________________________________________");
 
             int count = 0;
             foreach (string arg in args)
@@ -33,26 +32,24 @@ namespace Post_Setup_Scripting
                 Console.WriteLine("{0}: {1}", count, arg);
                     count++;
             }
+            Console.WriteLine("");
 
 
             if (args.Length != 2)
             {
                 Console.WriteLine("Incorrect args.  {0}", DateTime.Now.ToString());
-                Console.ReadLine();
+                Console.WriteLine("");
                 return;
             }
+
+            Console.WriteLine("___________________________________________________________________");
 
             //arg 1 - path to MSI
             string PathToMSI = args[0];
             //arg 2 - path to assembly
             string PathToAssembly = args[1];
 
-
             string InstallerVersion = GetMsiProperty(PathToMSI, "ProductVersion");
-
-
-
-
 
             Type InstallerType;
             WindowsInstaller.Installer Installer;

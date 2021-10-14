@@ -546,8 +546,10 @@ namespace Live_Electrochem
 
         private void FileProperties_Click(object sender, RoutedEventArgs e)
         {
-            FilePropertiesWindow w = new FilePropertiesWindow();
-            w.File = this.SelectedFile;
+            FilePropertiesWindow w = new FilePropertiesWindow
+            {
+                File = this.SelectedFile
+            };
             w.Show();
         }
 
@@ -565,10 +567,10 @@ namespace Live_Electrochem
         {
             MainWindow window = (MainWindow)o;
             window.AddLog("Live Monitoring {0}", (bool)e.NewValue ? "ENABLED" : "DISABLED");
-            window.IsMonitoringChangedInternal(o, e);
+            window.IsMonitoringChangedInternal(e);
         }
 
-        private async void IsMonitoringChangedInternal(DependencyObject o, DependencyPropertyChangedEventArgs e)
+        private async void IsMonitoringChangedInternal(DependencyPropertyChangedEventArgs e)    //PF16/10/2021 removed first parameter 'DependencyObject o' since it was unused
         {
             if (this.watcher != null)
             {
@@ -587,7 +589,7 @@ namespace Live_Electrochem
                 foreach (System.Timers.Timer t in timers.Values)
                 {
                     t.Enabled = false;
-                    t.Elapsed -= T_Elapsed;
+                    t.Elapsed -= Timer_Elapsed;
                     t.Dispose();
                 }
             timers.Clear();
@@ -642,7 +644,7 @@ namespace Live_Electrochem
                     AddLog("\tFileWatcher::File is locked. Will start Timer to monitor when it is available.");
 
                     ExtTimer t = new ExtTimer(2000);
-                    t.Elapsed += T_Elapsed;
+                    t.Elapsed += Timer_Elapsed;
                     t.Tag = e.FullPath;
                     t.AutoReset = true;
                     t.Start();
@@ -655,7 +657,7 @@ namespace Live_Electrochem
             }));
         }
 
-        private void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             Debug.Print("T_Elapsed sender={0}     e={1}", sender, e);
 
@@ -669,12 +671,12 @@ namespace Live_Electrochem
                     this.ProcessFile((string)t.Tag, true);      //ProcessFile with UpdatePlots = true
                     timers.Remove((string)(t.Tag));
                 }));
-                t.Elapsed -= T_Elapsed;
+                t.Elapsed -= Timer_Elapsed;
                 t.Dispose();
             }
         }
 
-        private Dictionary<string, ExtTimer> timers = new Dictionary<string, ExtTimer>();
+        private readonly Dictionary<string, ExtTimer> timers = new Dictionary<string, ExtTimer>();
 
         #endregion
 
@@ -735,7 +737,7 @@ namespace Live_Electrochem
                         AddLog("\tFileWatcher::File is locked. Will start Timer to monitor when it is available.");
 
                         ExtTimer t = new ExtTimer(2000);
-                        t.Elapsed += T_Elapsed;
+                        t.Elapsed += Timer_Elapsed;
                         t.Tag = f.FullName;
                         t.AutoReset = true;
                         t.Start();
@@ -903,7 +905,7 @@ namespace Live_Electrochem
 
             AllIntegratedModel.Clear();
 
-            OxyPlot.Wpf.OxyColorConverter oxyColorConverter = new OxyColorConverter();
+            //OxyPlot.Wpf.OxyColorConverter oxyColorConverter = new OxyColorConverter();
 
             double[] x_data = new double[Files.Count];
             double[] y_data = new double[Files.Count];
@@ -938,8 +940,10 @@ namespace Live_Electrochem
             LVBinaryReader reader = null;
             try
             {
-                LVBinFile file = new LVBinFile();
-                file.FullFilename = Filename;
+                LVBinFile file = new LVBinFile
+                {
+                    FullFilename = Filename
+                };
 
 
                 stream = new FileStream(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -1437,8 +1441,6 @@ namespace Live_Electrochem
             UInt16 ui16_;
 
             long start = 0;
-            pos = start;
-
             reader.BaseStream.Seek(start, SeekOrigin.Begin);
 
             int column_width = 15;
@@ -1523,7 +1525,7 @@ namespace Live_Electrochem
             //double baseline_SD = 0;
             //double evoked_Max = 0;
 
-            LVBinFile file = this.Files.First();
+            //LVBinFile file = this.Files.First();
 
             try
             {
@@ -1571,14 +1573,11 @@ namespace Live_Electrochem
         /// <returns>Result is in pColoumbs (I think)</returns>
         private decimal CalculateCharge(decimal[] Data, long LowerBound, long UpperBound, decimal a)
         {
+            decimal curve = IntegrateRange(Data, LowerBound, UpperBound, a);
+
             //Data = Data.MultiplyArray(1e-9m);
 
-            decimal wedge = 0m;
-            decimal curve = 0m;
-
-            curve = IntegrateRange(Data, LowerBound, UpperBound, a);
-
-            wedge = Integrate(Data, LowerBound, UpperBound, a * (UpperBound - LowerBound));
+            decimal wedge = Integrate(Data, LowerBound, UpperBound, a * (UpperBound - LowerBound));
             return (curve - wedge) * 1e6m; // * 1e12m;
         }
 
@@ -1711,7 +1710,7 @@ namespace Live_Electrochem
 
         #region Settings
 
-        private string RegistryPathBase = "Software\\Wow6432Node\\Silicon Nervous System\\Live Electrochemistry";          //if changed, update in SNS_Post_Install_Scripting
+        private readonly string RegistryPathBase = "Software\\Wow6432Node\\Silicon Nervous System\\Live Electrochemistry";          //if changed, update in SNS_Post_Install_Scripting
 
 
         private object GetRegistryValue(string Value, bool CurrentUser = false)
@@ -1778,8 +1777,11 @@ namespace Live_Electrochem
 
         private void LoadSettings()
         {
-            Settings s = new Settings();
-            s.RecentFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            Settings s = new Settings
+            {
+                RecentFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+            };
+
             if (File.Exists(GetSettingsFolder() + "\\Live Electrochemistry Settings.xml"))
             {
                 XmlReader reader = null;
@@ -2174,7 +2176,7 @@ namespace Live_Electrochem
                 layoutSerializer.LayoutSerializationCallback += (obj, arg) =>
                 {
                     Debug.Print("   XmlLayoutSerializer.DeSerializing Title: {0}, Content: {1}",
-                        arg.Model.Title, arg.Content == null ? "null" : arg.Content);
+                        arg.Model.Title, arg.Content ?? "null");
                     //arg.Content = arg.Content;
                     var prevContent = currentContentsList.FirstOrDefault(c => c.ContentId == arg.Model.ContentId);
                     if (prevContent != null) { arg.Content = prevContent.Content; }
@@ -2196,9 +2198,11 @@ namespace Live_Electrochem
         private void ScalePlot_Click(object sender, RoutedEventArgs e)
         {
             PlotViewModelBase pvmb = (PlotViewModelBase)((Button)sender).Tag;
-            AxisPropertiesWindow apw = new AxisPropertiesWindow();
-            apw.Owner = this;
-            apw.PlotModel = pvmb;
+            AxisPropertiesWindow apw = new AxisPropertiesWindow
+            {
+                Owner = this,
+                PlotModel = pvmb
+            };
             if (apw.ShowDialog().GetValueOrDefault(false) == true)
             {
                 apw.PlotModel.ScalePlotAxes();
@@ -2225,9 +2229,9 @@ namespace Live_Electrochem
         #endregion
         private DoubleRectangle GetFullDataRange(OxyPlot.Wpf.PlotView Plot)
         {
-            DoubleRectangle result = new DoubleRectangle();
+            //DoubleRectangle result = new DoubleRectangle();
 
-            PlotModel pm = Plot.ActualModel;
+            //PlotModel pm = Plot.ActualModel;
 
             double ymin = double.MaxValue;
             double ymax = double.MinValue;
@@ -2254,7 +2258,7 @@ namespace Live_Electrochem
                 //}
             }
 
-            result = new DoubleRectangle()
+            DoubleRectangle result = new DoubleRectangle()
             {
                 Bottom = ymin,
                 Top = ymax,
@@ -2314,8 +2318,10 @@ namespace Live_Electrochem
 
         private void CalibrationSource_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();        //eventually support opening a folder so that it works for FSCAV calibrations (not just FSCV)
-            d.Multiselect = false;
+            OpenFileDialog d = new OpenFileDialog
+            {
+                Multiselect = false
+            };        //eventually support opening a folder so that it works for FSCAV calibrations (not just FSCV)
 
             if (d.ShowDialog(this) == true)
             {

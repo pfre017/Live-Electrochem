@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29111.141
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31808.319
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Live_Electrochem", "Live_Electrochem\Live_Electrochem.csproj", "{03DC8012-AB97-4643-946D-F479904B1581}"
+	ProjectSection(ProjectDependencies) = postProject
+		{04630E42-863A-4EBE-B49D-74CAC4410DED} = {04630E42-863A-4EBE-B49D-74CAC4410DED}
+		{C21F7CBA-3456-4E61-B6CE-19B8648E99F9} = {C21F7CBA-3456-4E61-B6CE-19B8648E99F9}
+	EndProjectSection
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{65E35B6C-75D8-4DBA-B34D-86AFB0D0CA68}"
 	ProjectSection(ProjectDependencies) = postProject
